@@ -393,7 +393,7 @@ def visualize_results(posterior_r, posterior_mu, posterior_Q, Q_true, alerts, fo
     normal_lower = Q_true * 0.9
     normal_upper = Q_true * 1.1
 
-    # ----------------------------
+    # ---------------------------
     # Radius Stats
     # ----------------------------
     r_mean = np.mean(posterior_r)
