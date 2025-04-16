@@ -53,7 +53,7 @@ blood_flow_analysis_results/
 
 ### 1. Clone the Repository
 
-git clone https://github.com/your-username/Bloodflow_Analysis.git  
+git clone https://github.com/Preetham991/bayesian_inference.git 
 cd Bloodflow_Analysis
 
 ### 2. Install Dependencies
