@@ -1,4 +1,4 @@
-# Bayesian Analysis of Blood Flow Bayesian Analysis using PyMC
+# Bayesian Analysis of Blood Flow 
 
 This project models blood flow in arteries using Poiseuille's Law and performs Bayesian inference using the PyMC probabilistic programming framework. It detects abnormal flow states such as Blockage, Vasoconstriction, and Vasodilation by analyzing posterior distributions of blood flow parameters.
 
