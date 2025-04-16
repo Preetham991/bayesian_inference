@@ -101,7 +101,7 @@ def visualize_results(posterior_r, posterior_mu, posterior_Q, Q_true, alerts):
         percent = (count / len(alerts)) * 100
         print(f"  {state}: {count} samples ({percent:.1f}%)")
 
-# -----------------------
+# ----------------------
 # Execution
 # -----------------------
 if __name__ == "__main__":
