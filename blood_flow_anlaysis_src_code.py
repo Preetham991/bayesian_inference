@@ -102,7 +102,7 @@ def visualize_results(posterior_r, posterior_mu, posterior_Q, Q_true, alerts):
         print(f"  {state}: {count} samples ({percent:.1f}%)")
 
 # ----------------------
-# Execution
+## Execution
 # -----------------------
 if __name__ == "__main__":
     Q_true = poiseuille_flow(true_r, true_mu)
