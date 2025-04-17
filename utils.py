@@ -75,7 +75,7 @@ def visualize_results(posterior_r, posterior_mu, posterior_Q, Q_true, true_r, tr
     plt.tight_layout()
     os.makedirs(folder_path, exist_ok=True)
     plt.savefig(os.path.join(folder_path, "blood_flow_analysis.png"), dpi=300)
-    plt.show()
+    #plt.show()
 
     print("\nFlow State Summary:")
     for state, count in alert_counts.items():
