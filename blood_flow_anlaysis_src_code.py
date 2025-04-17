@@ -9,7 +9,7 @@ from utils import save_results_to_csv, visualize_results
 # -----------------------
 # Sampled Parameters with Increased Dispersion
 # -----------------------
-np.random.seed(42)
+np.random.seed(33)
 
 # Sampled using normal distributions
 delta_P = np.random.normal(loc=300, scale=100)         # Pressure drop (Pa)
