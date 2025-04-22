@@ -1,10 +1,12 @@
 
+
 import pymc as pm
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 from scipy.integrate import quad
 import os
+import pandas as pd
 from utils import save_results_to_csv_and_pickle, visualize_results
 
 # -----------------------
@@ -82,50 +84,6 @@ def analyze_posteriors(trace, Q_true):
 # Robust Edge Classification with KDE
 # -----------------------
 
-def classify_edge_point_robust(Q_edge, Q_post, Q_true, epsilon=0.01, verbose=True):
-    """
-    Robustly estimates the probability that a point near regime boundary belongs
-    to one of the neighboring regimes using KDE-based integration.
-    """
-    # Define regime boundaries
-    normal_lower = 0.9 * Q_true
-    normal_upper = 1.1 * Q_true
-    blockage_threshold = 0.3 * normal_lower
-
-    # Determine neighboring regimes
-    if Q_edge < blockage_threshold:
-        regime_low, regime_high = "Below Blockage", "Blockage"
-    elif blockage_threshold <= Q_edge < normal_lower:
-        regime_low, regime_high = "Blockage", "Vasoconstriction"
-    elif normal_lower <= Q_edge < normal_upper:
-        regime_low, regime_high = "Normal", "Vasodilation"
-    else:
-        regime_low, regime_high = "Vasodilation", "Extreme Vasodilation"
-
-    # Fit KDE to posterior samples
-    kde = gaussian_kde(Q_post)
-
-    # Integration range
-    lower_range = (Q_edge - epsilon, Q_edge)
-    upper_range = (Q_edge, Q_edge + epsilon)
-
-    # Compute probabilities in the epsilon neighborhoods
-    prob_low, _ = quad(kde, lower_range[0], lower_range[1])
-    prob_high, _ = quad(kde, upper_range[0], upper_range[1])
-
-    # Normalize
-    total_prob = prob_low + prob_high
-    prob_low /= total_prob
-    prob_high /= total_prob
-
-    if verbose:
-        print(f"Robust Edge Classification at Q = {Q_edge:.12f}")
-        print(f"Between: [{regime_low}] ←→ [{regime_high}]")
-        print(f"P({regime_low}) = {prob_low:.3f}")
-        print(f"P({regime_high}) = {prob_high:.3f}")
-
-    return {regime_low: prob_low, regime_high: prob_high}
-
 def classify_transition_probability(Q_edge, Q_post, Q_true, epsilon=0.01, verbose=False):
     """
     Calculate transition probability between regimes using KDE-based integration.
@@ -200,14 +158,14 @@ if __name__ == "__main__":
     trace = build_and_run_model(Q_obs, Q_true)
     posterior_r, posterior_mu, posterior_Q, alerts = analyze_posteriors(trace, Q_true)
 
-    save_results_to_csv_and_pickle(posterior_r, posterior_mu, posterior_Q, alerts, folder_path)
-    visualize_results(posterior_r, posterior_mu, posterior_Q, Q_true, true_r, true_mu, alerts, folder_path)
-
     # Find transition points based on posterior samples
     transition_points = find_transition_points(posterior_Q, Q_true)
     print(f"\nDetected Transition Points: {transition_points}")
 
     seen_transitions = set()
+
+    # Create list to store transition probabilities
+    transition_probabilities = []
 
     # Classify transition probabilities for each unique transition point
     for edge_point in transition_points:
@@ -221,3 +179,15 @@ if __name__ == "__main__":
             print(f"\n Transition at Q={edge_point:.12f}:")
             for regime, prob in result.items():
                 print(f"  P({regime}) = {prob:.3f}")
+                # Append the transition probabilities to the list
+                #transition_probabilities.append((edge_point, regimes[0], prob, regimes[1], prob))
+                transition_probabilities.append((edge_point, regimes[0], result[regimes[0]], regimes[1], result[regimes[1]]))
+    # Save results to CSV
+    results_df = pd.DataFrame(transition_probabilities, columns=["Edge Point", "Start Regime", "Start Probability", "End Regime", "End Probability"])
+    save_results_to_csv_and_pickle(posterior_r, posterior_mu, posterior_Q, alerts, folder_path)
+
+    # Append transition probabilities to CSV
+    results_df.to_csv(os.path.join(folder_path, "transition_probabilities.csv"), index=False)
+
+    # Visualize results
+    visualize_results(posterior_r, posterior_mu, posterior_Q, Q_true, true_r, true_mu, alerts, folder_path)
