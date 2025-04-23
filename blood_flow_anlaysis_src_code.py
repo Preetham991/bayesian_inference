@@ -2,7 +2,7 @@
 
 import pymc as pm
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt 
 from scipy.stats import gaussian_kde
 from scipy.integrate import quad
 import os
