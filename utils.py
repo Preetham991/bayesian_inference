@@ -6,19 +6,7 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import numpy as np
 
-# def save_results_to_csv(posterior_r, posterior_mu, posterior_Q, alerts, folder_path):
-#     """Save posterior results"""
-#     df = pd.DataFrame({
-#         "posterior_r": posterior_r,
-#         "posterior_mu": posterior_mu,
-#         "posterior_Q": posterior_Q,
-#         "alert": alerts
-#     })
-#     os.makedirs(folder_path, exist_ok=True)
-#     df.to_csv(os.path.join(folder_path, "posterior_results.csv"), index=False)
 
-import pandas as pd
-import os
 
 def save_results_to_csv_and_pickle(posterior_r, posterior_mu, posterior_Q, alerts, folder_path):
     """Save posterior results to CSV and Pickle file, saving both in the same location"""
